@@ -1,4 +1,5 @@
 import { StatusBar } from "expo-status-bar";
+import { auth } from "../firebase";
 import React, { useLayoutEffect, useState } from "react";
 import { StyleSheet, View, KeyboardAvoidingView } from "react-native";
 import { Button, Input, Text } from "react-native-elements";
@@ -16,7 +17,20 @@ const RegisterScreen = ({ navigation }) => {
     });
   }, [navigation]); //navigation이 change될 때
 
-  const register = () => {};
+  const register = () => {
+    auth
+      .createUserWithEmailAndPassword(email, password)
+      .then((authUser) => {
+        console.log("a", authUser);
+        authUser.user.updateProfile({
+          displayName: name,
+          photoURL:
+            imageUrl ||
+            "https://images.unsplash.com/photo-1569389397653-c04fe624e663?ixid=MXwxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxfHx8ZW58MHx8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+        });
+      })
+      .catch((error) => alert(error.message));
+  };
 
   return (
     <KeyboardAvoidingView behavior="padding" style={styles.container}>
